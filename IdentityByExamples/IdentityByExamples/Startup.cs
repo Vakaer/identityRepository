@@ -29,9 +29,18 @@ namespace IdentityByExamples
             services.AddDbContext<ApplicationContext>(opts =>
                 opts.UseSqlServer(Configuration.GetConnectionString("sqlConnection")));
 
-            services.AddIdentity<User, IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationContext>();
+            services.AddIdentity<User, IdentityRole>(
+                opt =>
+                {
+                    opt.Password.RequiredLength = 4;
+                    opt.Password.RequireDigit = false;
+                    opt.Password.RequireUppercase = false;
 
+                    opt.User.RequireUniqueEmail = true;
+                }
+                )
+                .AddEntityFrameworkStores<ApplicationContext>();
+            services.AddAutoMapper(typeof(Startup));
             services.AddControllersWithViews();
         }
 
